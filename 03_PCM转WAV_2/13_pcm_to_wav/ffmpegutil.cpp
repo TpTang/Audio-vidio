@@ -17,7 +17,9 @@ void FFmpegUtil::pcm2wav(WAVHeaders &header,
         return;
     }
     header.dataChunkDataSize = pcmFile.size();
-    header.riffChunkDataSize = header.dataChunkDataSize + sizeof(WAVHeaders) - 8;
+    header.riffChunkDataSize = header.dataChunkDataSize + sizeof(WAVHeaders)
+                                                        - sizeof(header.riffChunkID)
+                                                        - sizeof(header.riffChunkDataSize);
 
     //打开WAV文件
     QFile wavFile(wavFileName);
