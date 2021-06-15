@@ -113,7 +113,7 @@ void PlayThread::run(){
        buffer.len = file.read((char*)data, BUFFER_SIZE); //指定每次读BUFFER_SIZE B大小的数据 //buffer.len：实际大小
        if(buffer.len <= 0){  //读取数据错误或读到文件末尾
            //避免音频还在播放就退出循环去关闭设备
-           int samples = buffer.pulllen / BYTES_PER_SAMPLE; //样品数
+           int samples = buffer.pulllen / BYTES_PER_SAMPLE; //音频缓冲区剩余样品数
            int ms = samples * 1000 / SAMPLE_RATE; //最后一次读完数据后音频缓冲区剩余数据播放完毕需要的毫秒值
            SDL_Delay(ms);
            break;
