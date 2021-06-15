@@ -86,7 +86,7 @@ void PlayThread::run(){
     //2.打开设备-sdl2
     if(SDL_OpenAudio(&spec, nullptr)){ //返回0:成功 -1:失败
         qDebug() << "SDL_OpenAudio error" << SDL_GetError();
-        SDL_Quit();
+        SDL_Quit(); //清除Audio子系统
         return;
     }
 
