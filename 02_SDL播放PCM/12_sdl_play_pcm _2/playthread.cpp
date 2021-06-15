@@ -12,7 +12,7 @@
 #define SAMPLE_SIZE SDL_AUDIO_BITSIZE(SAMPLE_FORMAT) //16
 #define CHANNELS 2
 #define SAMPLES 1024 //音频缓冲区样品数量
-#define BYTES_PER_SAMPLE ((SAMPLE_SIZE *CHANNELS) >> 8) //每一个样品所占字节大小
+#define BYTES_PER_SAMPLE ((SAMPLE_SIZE *CHANNELS) >> 3) //每一个样品所占字节大小
 #define BUFFER_SIZE (BYTES_PER_SAMPLE * SAMPLES) //音频缓冲区字节大小
                                                  //注：将项目的数据缓冲区和音频缓冲区设置成了一样大小
 
@@ -40,8 +40,8 @@ PlayThread::~PlayThread(){
 
 
 //等待音频设备回调（会回调多次，默认在子线程进行，只要线程启动就会不断回调）
-void pull_audio_data(void *userdata,
-                     Uint8 * stream, //向stream指向的空间填充pcm数据
+void pull_audio_data(void* userdata,
+                     Uint8* stream, //向stream指向的空间填充pcm数据
                      int len //音频缓冲区大小
                      ){
 
@@ -114,7 +114,7 @@ void PlayThread::run(){
        if(buffer.len <= 0){  //读取数据错误或读到文件末尾
            //避免音频还在播放就退出循环去关闭设备
            int samples = buffer.pulllen / BYTES_PER_SAMPLE; //样品数
-           int ms = samples * 1000 / SAMPLE_RATE; //最后一次读完数据后音频缓冲区剩余数据播放完毕需要的时间
+           int ms = samples * 1000 / SAMPLE_RATE; //最后一次读完数据后音频缓冲区剩余数据播放完毕需要的毫秒值
            SDL_Delay(ms);
            break;
         }
