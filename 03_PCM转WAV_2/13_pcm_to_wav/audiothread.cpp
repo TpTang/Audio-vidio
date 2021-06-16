@@ -59,6 +59,7 @@ void showSpec(AVFormatContext* ctx){
 }
 
 void AudioThread::run(){
+    //一阶段：录制
     //2.获取输入格式对象
     AVInputFormat* fmt = av_find_input_format(FMT_NAME);
     if(!fmt){
@@ -119,11 +120,8 @@ void AudioThread::run(){
 
     }
     qDebug() << "数据录入完毕";
-
-
-
-
-    file.close(); //关闭文件
+    
+    //二阶段：
     //5.PCM转WAV
     //获取输入流
     AVStream* stream = ctx->streams[0];
@@ -138,6 +136,7 @@ void AudioThread::run(){
     FFmpegUtil::pcm2wav(header,fileName.toUtf8().data(), wavFileName.toUtf8().data());
 
     //6.释放资源
+    file.close(); //关闭文件
     avformat_close_input(&ctx); //关闭读取设备
 
     qDebug() << "线程正常结束";
