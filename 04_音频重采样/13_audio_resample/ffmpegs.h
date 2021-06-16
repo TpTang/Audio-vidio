@@ -8,10 +8,10 @@
 extern "C"{
 #include <libswresample/swresample.h> //重采样
 #include <libavutil/avutil.h> //工具包
-#include <libavformat/avformat.h>
+#include <libavformat/avformat.h> //格式
 }
 
-#define ERROR_BUF(ret) char errbuf[1024]; av_strerror(ret, errbuf, sizeof(errbuf));
+#define ERROR_BUF(ret) char errbuf[1024]; av_strerror(ret, errbuf, sizeof(errbuf)); //错误信息宏
 
 typedef struct {
     const char* fileName;
