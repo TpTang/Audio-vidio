@@ -8,24 +8,24 @@ void FFmpegs::resampleAudio(ResampleAudioSpec& in, ResampleAudioSpec& out){
     resampleAudio(in.fileName, in.sampleRate, in.ChLayout, in.sampleFmt,
                   out.fileName, out.sampleRate, out.ChLayout, out.sampleFmt);
 }
-void FFmpegs::resampleAudio(const char *inFileName,
+void FFmpegs::resampleAudio(const char* inFileName,
                             int inSampleRate,
                             int inChLayout,
                             AVSampleFormat inSampleFmt,
-                            const char *outFileName,
+                            const char* outFileName,
                             int outSampleRate,
                             int outChLayout,
                             AVSampleFormat outSampleFmt){
     QFile inFile(inFileName);
     QFile outFile(outFileName);
-    //创建输入缓冲区
-    uint8_t** inData = nullptr; //指向输入缓冲区的外层指针
+    //输入缓冲区参数
+    uint8_t** inData = nullptr; //指向输入缓冲区的外层指针(用指向指针的指针：双声道时指向含两个Uint8_t*成员的数组）
     int inLinesize = 0; //缓冲区大小
     int inChs = av_get_channel_layout_nb_channels(inChLayout); //声道数
     int inBytesPerSample = inChs * av_get_bytes_per_sample(inSampleFmt); //每个输入样本占字节数
     int inSamples = 1024; //缓冲区样本数量
 
-    //创建输出缓冲区
+    //输出缓冲区参数
     uint8_t** outData = nullptr; //指向输入缓冲区的外层指针
     int outLinesize = 0; //缓冲区大小
     int outChs = av_get_channel_layout_nb_channels(outChLayout); //声道数
@@ -40,6 +40,7 @@ void FFmpegs::resampleAudio(const char *inFileName,
      */
     int ret = 0; //函数调用返回结果
     int len = 0; //每次读入数据大小
+    
     //1.创建重采样上下文
     SwrContext* ctx = swr_alloc_set_opts(nullptr,outChLayout, outSampleFmt, outSampleRate,
                                          inChLayout, inSampleFmt, inSampleRate,0, nullptr);
@@ -93,7 +94,7 @@ void FFmpegs::resampleAudio(const char *inFileName,
             qDebug() << "swr_convert error:" << errbuf;
         }
         //将转换后的数据写入文件
-        outFile.write((char *) *outData, ret * outBytesPerSample);
+        outFile.write((char*) *outData, ret * outBytesPerSample);
     }
     //检查输出缓冲区是否还有残留样本（已经重采样过了的）
     while((ret = swr_convert(ctx, outData, outSamples, nullptr, 0)) > 0){ //条件成立：缓冲区有残留
