@@ -113,7 +113,7 @@ void AudioThread::run(){
             qDebug() << "错误信息" << errbuf << "错误码" << ret;
             break;
         }
-
+        av_packet_unref(&pkt); //释放pkt内部指针指向的栈空间
     }
     qDebug() << "数据录入完毕";
 
